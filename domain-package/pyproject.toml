@@ -1,0 +1,19 @@
+[project]
+name = "domain"
+version = "0.1.0"
+description = "Proyecto desarrollado DataSoft Inventory — 2026"
+authors = [
+    {name = "Sebastian Ospina"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic[email] (>=2.10.0,<3.0.0)"
+]
+
+[tool.poetry]
+package-mode = true
+
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"

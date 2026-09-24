@@ -1,0 +1,17 @@
+annotated-types
+asgiref
+Django
+django-cors-headers
+django-environ
+djangorestframework
+dnspython
+email-validator
+idna
+psycopg2-binary
+pydantic
+pydantic_core
+sqlparse
+typing-inspection
+typing_extensions
+tzdata
+gunicorn
