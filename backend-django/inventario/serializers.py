@@ -18,7 +18,7 @@ class ProductoSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ProductoModel
-        fields = ['id', 'codigo', 'nombre', 'caracteristicas', 'precios', 'empresa', 'empresa_detalle']
+        fields = ['id', 'codigo', 'nombre', 'caracteristicas', 'precios', 'cantidad', 'empresa', 'empresa_detalle']
         # 'empresa' recibe el NIT (ID de la empresa) al crear/actualizar
         # 'empresa_detalle' devuelve el objeto completo al hacer un GET
 

@@ -47,6 +47,7 @@ class ProductoDTO(BaseModel):
     nombre: str
     caracteristicas: str
     precios: Dict[str, float]
+    cantidad: int
     empresa_nombre: str
 
 class EmailSendDTO(BaseModel):
@@ -137,7 +138,8 @@ def build_pdf_buffer(productos: List[ProductoDTO]) -> io.BytesIO:
         Paragraph("Código", table_header_style), 
         Paragraph("Producto", table_header_style), 
         Paragraph("Características", table_header_style), 
-        Paragraph("Precios", table_header_style)
+        Paragraph("Precios", table_header_style),
+        Paragraph("Cantidad", table_header_style)
     ]]
     
     # Filas
@@ -148,7 +150,8 @@ def build_pdf_buffer(productos: List[ProductoDTO]) -> io.BytesIO:
             Paragraph(p.codigo, table_cell_style),
             Paragraph(p.nombre, table_cell_style),
             Paragraph(p.caracteristicas, table_cell_style),
-            Paragraph(precios_str, table_cell_style)
+            Paragraph(precios_str, table_cell_style),
+            Paragraph(str(p.cantidad), table_cell_style)
         ])
     
     # Anchura de columnas

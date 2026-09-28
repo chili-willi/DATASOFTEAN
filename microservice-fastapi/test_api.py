@@ -97,7 +97,8 @@ def test_flow():
         "precios": {
             "USD": 350.0,
             "COP": 1400000.0
-        }
+        },
+        "cantidad": 50
     }
     res_prod = requests.post(f"{BACKEND_URL}/api/productos/", json=producto_payload, headers=headers)
     if res_prod.status_code not in [200, 201]:
@@ -118,6 +119,7 @@ def test_flow():
         "nombre": "Celular Inteligente ean",
         "caracteristicas": "8GB RAM, Pantalla OLED",
         "precios": {"USD": 350.0, "COP": 1400000.0},
+        "cantidad": 50,
         "empresa_nombre": "Test Technology S.A.S."
     }]
     res_pdf = requests.post(f"{FASTAPI_URL}/api/micro/pdf/generate", json=pdf_payload)

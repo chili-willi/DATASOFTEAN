@@ -19,6 +19,7 @@ class Producto(BaseModel):
     # Precio en varias monedas
     # Un diccionario ej: {"USD": 100.0, "COP": 390000.0}
     precios: Dict[str, float] = Field(..., description="Diccionario de precios por moneda")
+    cantidad: int = Field(..., ge=0, description="Cantidad disponible en inventario")
     empresa_nit: str
 
     class Config:

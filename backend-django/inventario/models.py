@@ -27,6 +27,9 @@ class ProductoModel(models.Model):
     
     # Precio en varias monedas ej: {"USD": 50, "COP": 200000}
     precios = models.JSONField(default=dict)
+
+    # Cantidad disponible en inventario
+    cantidad = models.PositiveIntegerField(default=0)
     
     # Al eliminar una empresa, se eliminan sus productos en cascada
     empresa = models.ForeignKey(EmpresaModel, on_delete=models.CASCADE, related_name='productos')

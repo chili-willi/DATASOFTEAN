@@ -5,6 +5,7 @@ import { ClipboardList, Download, Mail, Send, AlertCircle, CheckCircle2, Search 
 
 const DJANGO_URL = process.env.NEXT_PUBLIC_API_URL;
 const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL;
+
 export default function Inventario() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,6 +49,7 @@ export default function Inventario() {
       nombre: p.nombre,
       caracteristicas: p.caracteristicas,
       precios: p.precios,
+      cantidad: p.cantidad,
       empresa_nombre: p.empresa_detalle ? p.empresa_detalle.nombre : p.empresa
     }));
   };
@@ -299,6 +301,7 @@ export default function Inventario() {
                         <th style={{ width: '250px' }}>Nombre de Producto</th>
                         <th>Características</th>
                         <th style={{ width: '300px' }}>Precios</th>
+                        <th style={{ width: '150px' }}>Cantidad</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -314,6 +317,7 @@ export default function Inventario() {
                               </span>
                             ))}
                           </td>
+                          <td style={{ fontWeight: '600' }}>{prod.cantidad}</td>
                         </tr>
                       ))}
                     </tbody>

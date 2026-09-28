@@ -28,7 +28,8 @@ export default function Productos() {
     empresa: '',
     precioUSD: '',
     precioCOP: '',
-    precioEUR: ''
+    precioEUR: '',
+    cantidad: 0
   });
 
   const fetchData = async () => {
@@ -74,7 +75,8 @@ export default function Productos() {
       empresa: empresas.length > 0 ? empresas[0].nit : '',
       precioUSD: '',
       precioCOP: '',
-      precioEUR: ''
+      precioEUR: '',
+      cantidad: 0
     });
     setFormError('');
     setIsModalOpen(true);
@@ -90,7 +92,8 @@ export default function Productos() {
       empresa: prod.empresa,
       precioUSD: prod.precios.USD || '',
       precioCOP: prod.precios.COP || '',
-      precioEUR: prod.precios.EUR || ''
+      precioEUR: prod.precios.EUR || '',
+      cantidad: prod.cantidad || 0
     });
     setFormError('');
     setIsModalOpen(true);
@@ -157,7 +160,8 @@ export default function Productos() {
       nombre: formData.nombre,
       caracteristicas: formData.caracteristicas,
       empresa: formData.empresa,
-      precios
+      precios,
+      cantidad: formData.cantidad ? parseInt(formData.cantidad) : 0
     };
 
     const url = modalMode === 'create'
@@ -292,6 +296,7 @@ export default function Productos() {
                   <th>Empresa</th>
                   <th>Características</th>
                   <th>Precios</th>
+                  <th>Cantidad</th>
                   {isAdm && <th style={{ textAlign: 'right' }}>Acciones</th>}
                 </tr>
               </thead>
@@ -313,6 +318,7 @@ export default function Productos() {
                         </span>
                       ))}
                     </td>
+                    <td style={{ fontWeight: '600' }}>{prod.cantidad}</td>
                     {isAdm && (
                       <td style={{ textAlign: 'right' }}>
                         <div className="action-buttons" style={{ justifyContent: 'flex-end' }}>
@@ -486,6 +492,19 @@ export default function Productos() {
                     value={formData.precioEUR}
                     onChange={handleInputChange}
                     placeholder="0.00"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label" style={{ fontSize: '0.75rem' }} htmlFor="cantidad">Cantidad en Inventario</label>
+                  <input
+                    id="cantidad"
+                    name="cantidad"
+                    type="number"
+                    min="0"
+                    className="form-control"
+                    value={formData.cantidad}
+                    onChange={handleInputChange}
+                    placeholder="0"
                   />
                 </div>
               </div>
