@@ -132,30 +132,44 @@ def build_pdf_buffer(productos: List[ProductoDTO]) -> io.BytesIO:
     story.append(Paragraph(f"Fecha de generación: {time.strftime('%Y-%m-%d %H:%M:%S')} | Generado por: Sistema de Microservicios", subtitle_style))
     story.append(Spacer(1, 10))
     
-    # Encabezados de la tabla
-    data = [[
-        Paragraph("Empresa", table_header_style), 
-        Paragraph("Código", table_header_style), 
-        Paragraph("Producto", table_header_style), 
-        Paragraph("Características", table_header_style), 
-        Paragraph("Precios", table_header_style),
-        Paragraph("Cantidad", table_header_style)
-    ]]
-    
-    # Filas
+    PESO_POR_DEFECTO = 80
+
+    columnas = [
+        {"titulo": "Empresa",         "valor": lambda p: p.empresa_nombre,    "peso": 100},
+        {"titulo": "Código",          "valor": lambda p: p.codigo,            "peso": 70},
+        {"titulo": "Producto",        "valor": lambda p: p.nombre,            "peso": 110},
+        {"titulo": "Características", "valor": lambda p: p.caracteristicas,   "peso": 140},
+        {"titulo": "Precios",         "valor": lambda p: ", ".join(f"{moneda}: {val}" for moneda, val in p.precios.items()), "peso": 120},
+        {"titulo": "Cantidad",        "valor": lambda p: p.cantidad,          "peso": 70},
+    ]
+
+    if not columnas:
+        raise ValueError("La tabla del reporte no tiene columnas definidas.")
+
+    for i, col in enumerate(columnas):
+        if "titulo" not in col or not callable(col.get("valor")):
+            raise ValueError(f"La columna #{i} debe tener 'titulo' y una función 'valor'.")
+
+    ancho_util = letter[0] - doc.leftMargin - doc.rightMargin
+    pesos = [col.get("peso", PESO_POR_DEFECTO) for col in columnas]
+    if any(p <= 0 for p in pesos):
+        raise ValueError("El 'peso' de cada columna debe ser mayor que 0.")
+    total_pesos = sum(pesos)
+    col_widths = [ancho_util * p / total_pesos for p in pesos]
+
+    # Encabezados generados desde la misma lista de columnas
+    data = [[Paragraph(str(col["titulo"]), table_header_style) for col in columnas]]
+
+    # Filas generadas desde la misma lista de columnas
     for p in productos:
-        precios_str = ", ".join([f"{moneda}: {val}" for moneda, val in p.precios.items()])
-        data.append([
-            Paragraph(p.empresa_nombre, table_cell_style),
-            Paragraph(p.codigo, table_cell_style),
-            Paragraph(p.nombre, table_cell_style),
-            Paragraph(p.caracteristicas, table_cell_style),
-            Paragraph(precios_str, table_cell_style),
-            Paragraph(str(p.cantidad), table_cell_style)
-        ])
-    
-    # Anchura de columnas
-    table = Table(data, colWidths=[100, 70, 110, 140, 120])
+        fila = []
+        for col in columnas:
+            valor = col["valor"](p)
+            texto = "" if valor is None else str(valor)
+            fila.append(Paragraph(texto, table_cell_style))
+        data.append(fila)
+
+    table = Table(data, colWidths=col_widths)
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#6366f1')), # Cabecera Indigo
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
