@@ -56,17 +56,11 @@ def test_flow():
         'direccion': 'Calle Falsa 123',
         'telefono': '555-5555',
     }
-    res_block = requests.post(
-        f'{BACKEND_URL}/api/empresas/', json=test_empresa, headers=ext_headers
-    )
+    res_block = requests.post(f'{BACKEND_URL}/api/empresas/', json=test_empresa, headers=ext_headers)
     if res_block.status_code in [401, 403]:
-        print(
-            f'Correcto. Peticion bloqueada con codigo de estado esperado: {res_block.status_code}'
-        )
+        print(f'Correcto. Peticion bloqueada con codigo de estado esperado: {res_block.status_code}')
     else:
-        print(
-            f'Error: El usuario Externo pudo crear/modificar recursos. Estado: {res_block.status_code}'
-        )
+        print(f'Error: El usuario Externo pudo crear/modificar recursos. Estado: {res_block.status_code}')
         sys.exit(1)
 
     # 5. Probar Creación por Administrador (Empresa y Producto)
@@ -101,9 +95,7 @@ def test_flow():
         'precios': {'USD': 350.0, 'COP': 1400000.0},
         'cantidad': 50,
     }
-    res_prod = requests.post(
-        f'{BACKEND_URL}/api/productos/', json=producto_payload, headers=headers
-    )
+    res_prod = requests.post(f'{BACKEND_URL}/api/productos/', json=producto_payload, headers=headers)
     if res_prod.status_code not in [200, 201]:
         print(f'Error al crear producto como admin: {res_prod.status_code} - {res_prod.text}')
         sys.exit(1)
@@ -164,9 +156,7 @@ def test_flow():
         print(f'Error al obtener el Ledger: {res_bc.status_code}')
         sys.exit(1)
     bc_data = res_bc.json()
-    print(
-        f'Cadena de Auditoria obtenida. Largo: {bc_data["length"]}. Valida?: {bc_data["is_valid"]}'
-    )
+    print(f'Cadena de Auditoria obtenida. Largo: {bc_data["length"]}. Valida?: {bc_data["is_valid"]}')
     if not bc_data['is_valid']:
         print('Error: La cadena criptografica de auditoria no es valida!')
         sys.exit(1)

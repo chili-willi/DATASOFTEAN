@@ -87,9 +87,7 @@ def build_pdf_buffer(productos: List[ProductoDTO]) -> io.BytesIO:
     from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
     buffer = io.BytesIO()
-    doc = SimpleDocTemplate(
-        buffer, pagesize=letter, rightMargin=36, leftMargin=36, topMargin=36, bottomMargin=36
-    )
+    doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=36, leftMargin=36, topMargin=36, bottomMargin=36)
     story = []
     styles = getSampleStyleSheet()
 
@@ -194,9 +192,7 @@ def build_pdf_buffer(productos: List[ProductoDTO]) -> io.BytesIO:
 blockchain: List[Block] = []
 
 
-def calculate_hash(
-    index: int, timestamp: float, action: str, details: str, previous_hash: str
-) -> str:
+def calculate_hash(index: int, timestamp: float, action: str, details: str, previous_hash: str) -> str:
     value = f'{index}{timestamp}{action}{details}{previous_hash}'
     return hashlib.sha256(value.encode('utf-8')).hexdigest()
 
@@ -298,14 +294,10 @@ def send_pdf(dto: EmailSendDTO):
                 }
             else:
                 print(f'[BREVO ERROR] Status: {response.status_code} - Detail: {response.text}')
-                raise HTTPException(
-                    status_code=500, detail=f'Error en la API de Brevo: {response.text}'
-                )
+                raise HTTPException(status_code=500, detail=f'Error en la API de Brevo: {response.text}')
 
         else:
-            raise HTTPException(
-                status_code=500, detail='Falta configurar la variable BREVO_API_KEY en el entorno.'
-            )
+            raise HTTPException(status_code=500, detail='Falta configurar la variable BREVO_API_KEY en el entorno.')
 
     except Exception as e:
         print(f'[MAIL CRITICAL ERROR] Detalle del fallo: {str(e)}')
@@ -350,14 +342,10 @@ def ai_suggest_description(dto: AISuggestDTO):
                 suggested_text = data['candidates'][0]['content']['parts'][0]['text']
                 return {'suggested': suggested_text.strip()}
             else:
-                raise HTTPException(
-                    status_code=502, detail='Google AI respondió con una estructura inesperada.'
-                )
+                raise HTTPException(status_code=502, detail='Google AI respondió con una estructura inesperada.')
         else:
             print(f'[GEMINI ERROR DETECTED] Status: {res.status_code} - Body: {res.text}')
-            raise HTTPException(
-                status_code=res.status_code, detail=f'Google API devolvió un error: {res.text}'
-            )
+            raise HTTPException(status_code=res.status_code, detail=f'Google API devolvió un error: {res.text}')
 
     except requests.exceptions.RequestException as e:
         raise HTTPException(
@@ -373,9 +361,7 @@ def add_transaction_block(dto: TransactionDTO):
         previous_block = blockchain[-1]
         new_index = previous_block.index + 1
         current_timestamp = time.time()
-        new_hash = calculate_hash(
-            new_index, current_timestamp, dto.action, dto.details, previous_block.hash
-        )
+        new_hash = calculate_hash(new_index, current_timestamp, dto.action, dto.details, previous_block.hash)
         new_block = Block(
             index=new_index,
             timestamp=current_timestamp,

@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Head from 'next/head';
 import Layout from '../components/Layout';
-import { Box, Plus, Edit2, Trash2, X, AlertCircle, Sparkles, Wand2 } from 'lucide-react';
+import { Box, Plus, Edit2, Trash2, X, AlertCircle, Sparkles } from 'lucide-react';
 
 const DJANGO_URL = process.env.NEXT_PUBLIC_API_URL;
 const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL;
@@ -9,9 +9,22 @@ const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL;
 export default function Productos() {
   const [productos, setProductos] = useState([]);
   const [empresas, setEmpresas] = useState([]);
-  const [user, setUser] = useState({ rol: '' });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  // Cargar datos de usuario
+  const [user] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        try {
+          return JSON.parse(savedUser);
+        } catch (err) {
+          console.error('Error al parsear el usuario:', err);
+        }
+      }
+    }
+    return { rol: '' };
+  });
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,7 +45,7 @@ export default function Productos() {
     cantidad: 0,
   });
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const token = localStorage.getItem('token');
     const headers = { Authorization: `Token ${token}` };
 
@@ -51,19 +64,17 @@ export default function Productos() {
         setError('Error al obtener los datos del servidor');
       }
     } catch (err) {
-      setError('Error de conexión con el backend');
+      setError('Error de conexión con el backend', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-    fetchData();
-  }, []);
+    queueMicrotask(() => {
+      fetchData();
+    });
+  }, [fetchData]);
 
   const openCreateModal = () => {
     setModalMode('create');
@@ -128,7 +139,7 @@ export default function Productos() {
         setFormError('No se pudo obtener sugerencia de la IA.');
       }
     } catch (err) {
-      setFormError('Error de red al conectar con el microservicio de IA');
+      setFormError('Error de red al conectar con el microservicio de IA', err);
     } finally {
       setAiLoading(false);
     }
@@ -207,7 +218,7 @@ export default function Productos() {
         );
       }
     } catch (err) {
-      setFormError('Error de red al guardar el producto');
+      setFormError('Error de red al guardar el producto', err);
     }
   };
 
@@ -243,7 +254,7 @@ export default function Productos() {
         alert('Error al eliminar el producto.');
       }
     } catch (err) {
-      alert('Error de red al eliminar el producto');
+      alert('Error de red al eliminar el producto', err);
     }
   };
 

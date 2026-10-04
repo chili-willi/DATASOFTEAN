@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import { Cpu, ShieldCheck, ShieldAlert, Sparkles, RefreshCw, Layers } from 'lucide-react';
@@ -30,10 +30,6 @@ export default function Copiloto() {
     }
   };
 
-  useEffect(() => {
-    fetchLedger();
-  }, []);
-
   const handleAISubmit = async (e) => {
     e.preventDefault();
     if (!aiName) return;
@@ -58,7 +54,7 @@ export default function Copiloto() {
         setAiResult('Error al procesar la sugerencia');
       }
     } catch (err) {
-      setAiResult('Error de conexión con el microservicio de IA');
+      setAiResult('Error de conexión con el microservicio de IA', err);
     } finally {
       setAiLoading(false);
     }
@@ -99,7 +95,7 @@ export default function Copiloto() {
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: '1.5' }}>
             Esta herramienta utiliza un modelo de Lenguaje de Inteligencia Artificial para optimizar
-            descripciones. Está integrado en el botón <strong>"Optimizar con IA"</strong> del
+            descripciones. Está integrado en el botón <strong>Optimizar con IA</strong> del
             formulario de registro de productos, pero puedes probarlo de manera independiente en
             este laboratorio:
           </p>

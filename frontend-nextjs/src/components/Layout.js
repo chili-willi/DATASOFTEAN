@@ -11,22 +11,27 @@ export default function Layout({ children }) {
     const token = localStorage.getItem('token');
     const isPublicPage = ['/login', '/register'].includes(router.pathname);
 
-    if (!token) {
-      setIsAuthenticated(false);
-      if (!isPublicPage) {
-        router.push('/login');
+    const hasToken = Boolean(token);
+
+    // Evitamos ejecutar setState de forma síncrona envolviendo el bloque en una microtarea
+    queueMicrotask(() => {
+      setIsAuthenticated(hasToken);
+
+      if (!hasToken) {
+        if (!isPublicPage) {
+          router.push('/login');
+        } else {
+          setLoading(false);
+        }
       } else {
-        setLoading(false);
+        if (isPublicPage) {
+          router.push('/');
+        } else {
+          setLoading(false);
+        }
       }
-    } else {
-      setIsAuthenticated(true);
-      if (isPublicPage) {
-        router.push('/');
-      } else {
-        setLoading(false);
-      }
-    }
-  }, [router.pathname]);
+    });
+  }, [router, router.pathname]);
 
   if (loading) {
     return (
@@ -54,7 +59,7 @@ export default function Layout({ children }) {
         <span style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: '500' }}>
           Cargando inventario...
         </span>
-        <style jsx>{`
+        <style>{`
           @keyframes spin {
             to {
               transform: rotate(360deg);
@@ -69,7 +74,7 @@ export default function Layout({ children }) {
 
   return (
     <div className="app-container">
-      {!isPublicPage && <Navbar />}
+      {isAuthenticated && !isPublicPage && <Navbar />}
       <main className={isPublicPage ? '' : 'main-content'}>{children}</main>
     </div>
   );

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
 import Layout from '../components/Layout';
-import { UserPlus, Mail, Lock, AlertCircle, CheckCircle2, Sparkles, LogIn } from 'lucide-react';
+import { UserPlus, Mail, Lock, AlertCircle, CheckCircle2, LogIn } from 'lucide-react';
 
 const DJANGO_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -46,8 +46,8 @@ export default function Register() {
       setPassword('');
       setConfirmPassword('');
       setRol('Externo');
-    } catch (requestError) {
-      setError('Error al conectar con el servidor backend');
+    } catch (err) {
+      setError('Error al conectar con el servidor backend', err);
     } finally {
       setLoading(false);
     }

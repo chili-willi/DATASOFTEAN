@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import { Building2, Plus, Edit2, Trash2, X, AlertCircle } from 'lucide-react';
@@ -8,7 +8,6 @@ const FASTAPI_URL = process.env.NEXT_PUBLIC_FASTAPI_URL;
 
 export default function Empresas() {
   const [empresas, setEmpresas] = useState([]);
-  const [user, setUser] = useState({ rol: '' });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -17,8 +16,22 @@ export default function Empresas() {
   const [modalMode, setModalMode] = useState('create'); // 'create' | 'edit'
   const [formData, setFormData] = useState({ nit: '', nombre: '', direccion: '', telefono: '' });
   const [formError, setFormError] = useState('');
+  // Cargar datos de usuario
+  const [user] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        try {
+          return JSON.parse(savedUser);
+        } catch (err) {
+          console.error('Error al parsear el usuario:', err);
+        }
+      }
+    }
+    return { rol: '' };
+  });
 
-  const fetchEmpresas = async () => {
+  const fetchEmpresas = useCallback(async () => {
     const token = localStorage.getItem('token');
     try {
       const res = await fetch(`${DJANGO_URL}/api/empresas/`, {
@@ -31,19 +44,17 @@ export default function Empresas() {
         setError('Error al cargar la lista de empresas');
       }
     } catch (err) {
-      setError('Error de conexión con el backend');
+      setError('Error de conexión con el backend', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-    fetchEmpresas();
-  }, []);
+    queueMicrotask(() => {
+      fetchEmpresas();
+    });
+  }, [fetchEmpresas]);
 
   const openCreateModal = () => {
     setModalMode('create');
@@ -128,7 +139,7 @@ export default function Empresas() {
         }
       }
     } catch (err) {
-      setFormError('Error de red al guardar la empresa');
+      setFormError('Error de red al guardar la empresa', err);
     }
   };
 
@@ -168,7 +179,7 @@ export default function Empresas() {
         alert('Error al eliminar la empresa. Verifique sus permisos.');
       }
     } catch (err) {
-      alert('Error de red al eliminar la empresa');
+      alert('Error de red al eliminar la empresa', err);
     }
   };
 

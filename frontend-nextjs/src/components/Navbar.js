@@ -1,18 +1,24 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { LogOut, Box, Building2, ClipboardList, ShieldAlert, Cpu } from 'lucide-react';
+import { useState } from 'react';
+import { LogOut, Box, Building2, ClipboardList, Cpu } from 'lucide-react';
 
 export default function Navbar() {
   const router = useRouter();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
+  // Cargar datos de usuario
+  const [user] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        try {
+          return JSON.parse(savedUser);
+        } catch (error) {
+          console.error('Error al parsear el usuario:', error);
+        }
+      }
     }
-  }, []);
+    return null;
+  });
 
   const handleLogout = () => {
     localStorage.removeItem('token');

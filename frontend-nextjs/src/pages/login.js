@@ -44,7 +44,7 @@ export default function Login() {
         setError(data.error || 'Credenciales incorrectas');
       }
     } catch (err) {
-      setError('Error al conectar con el servidor backend');
+      setError('Error al conectar con el servidor backend', err);
     } finally {
       setLoading(false);
     }

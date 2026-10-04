@@ -2,21 +2,28 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Layout from '../components/Layout';
-import { Building2, Box, ArrowRight, ClipboardList, ShieldAlert, Cpu } from 'lucide-react';
+import { Building2, Box, ArrowRight } from 'lucide-react';
 
 const DJANGO_URL = process.env.NEXT_PUBLIC_API_URL;
 export default function Home() {
   const [stats, setStats] = useState({ empresas: 0, productos: 0 });
-  const [user, setUser] = useState({ correo: '', rol: '' });
   const [loading, setLoading] = useState(true);
+  // Cargar datos de usuario
+  const [user] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedUser = localStorage.getItem('user');
+      if (savedUser) {
+        try {
+          return JSON.parse(savedUser);
+        } catch (error) {
+          console.error('Error al parsear el usuario:', error);
+        }
+      }
+    }
+    return { correo: '', rol: '' };
+  });
 
   useEffect(() => {
-    // Cargar datos de usuario
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-
     // Cargar estadísticas
     const fetchStats = async () => {
       const token = localStorage.getItem('token');

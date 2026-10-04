@@ -164,6 +164,4 @@ REST_FRAMEWORK = {
 }
 
 # URL del Microservicio FastAPI para consumo interno
-FASTAPI_SERVICE_URL = env(
-    'FASTAPI_SERVICE_URL', default='https://microservice-fastapi.onrender.com'
-)
+FASTAPI_SERVICE_URL = env('FASTAPI_SERVICE_URL', default='https://microservice-fastapi.onrender.com')

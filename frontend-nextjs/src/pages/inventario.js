@@ -27,26 +27,26 @@ export default function Inventario() {
   const [emailLoading, setEmailLoading] = useState(false);
   const [emailStatus, setEmailStatus] = useState(null); // { type: 'success'|'error'|'simulated', msg: '' }
 
-  const fetchProductos = async () => {
-    const token = localStorage.getItem('token');
-    try {
-      const res = await fetch(`${DJANGO_URL}/api/productos/`, {
-        headers: { Authorization: `Token ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setProductos(data);
-      } else {
-        setError('Error al obtener la información de inventario');
-      }
-    } catch (err) {
-      setError('Error de conexión con el servidor backend');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchProductos = async () => {
+      const token = localStorage.getItem('token');
+      try {
+        const res = await fetch(`${DJANGO_URL}/api/productos/`, {
+          headers: { Authorization: `Token ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setProductos(data);
+        } else {
+          setError('Error al obtener la información de inventario');
+        }
+      } catch (err) {
+        setError('Error de conexión con el servidor backend', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchProductos();
   }, []);
 
@@ -89,7 +89,7 @@ export default function Inventario() {
         alert('Error al generar el PDF en el microservicio');
       }
     } catch (err) {
-      alert('Error de red al conectar con el microservicio de PDF');
+      alert('Error de red al conectar con el microservicio de PDF', err);
     }
   };
 
@@ -131,6 +131,7 @@ export default function Inventario() {
       setEmailStatus({
         type: 'error',
         msg: 'Error de red al conectar con el microservicio de correos',
+        err,
       });
     } finally {
       setEmailLoading(false);
@@ -289,7 +290,7 @@ export default function Inventario() {
         </div>
       ) : Object.keys(groupedProductos).length === 0 ? (
         <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-muted)' }}>
-          No se encontraron resultados para la búsqueda "{searchTerm}".
+          No se encontraron resultados para la búsqueda {searchTerm}.
         </div>
       ) : (
         <div>

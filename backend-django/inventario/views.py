@@ -86,9 +86,7 @@ def registrar_usuario(request):
     serializer = UsuarioRegistroSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return Response(
-            {'mensaje': 'Usuario registrado exitosamente'}, status=status.HTTP_201_CREATED
-        )
+        return Response({'mensaje': 'Usuario registrado exitosamente'}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -102,18 +100,14 @@ def login_usuario(request):
     password = request.data.get('password', '')
 
     if not correo or not password:
-        return Response(
-            {'error': 'Debe proporcionar correo y contraseña'}, status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response({'error': 'Debe proporcionar correo y contraseña'}, status=status.HTTP_400_BAD_REQUEST)
 
     user = authenticate(username=correo, password=password)
     if not user:
         return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_400_BAD_REQUEST)
 
     token, created = Token.objects.get_or_create(user=user)
-    return Response(
-        {'token': token.key, 'correo': user.correo, 'rol': user.rol}, status=status.HTTP_200_OK
-    )
+    return Response({'token': token.key, 'correo': user.correo, 'rol': user.rol}, status=status.HTTP_200_OK)
 
 
 # ==========================================
@@ -123,6 +117,4 @@ def login_usuario(request):
 def obtener_perfil(request):
     if not request.user.is_authenticated:
         return Response({'error': 'No autenticado'}, status=status.HTTP_401_UNAUTHORIZED)
-    return Response(
-        {'correo': request.user.correo, 'rol': request.user.rol}, status=status.HTTP_200_OK
-    )
+    return Response({'correo': request.user.correo, 'rol': request.user.rol}, status=status.HTTP_200_OK)
