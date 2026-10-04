@@ -13,6 +13,8 @@ __pycache__/
 dist/
 build/
 *.egg
+.pytest_cache/
+.ruff_cache/
 
 # Entornos virtuales
 .venv/
@@ -58,5 +60,9 @@ microservice-fastapi/scratch/
 postgres_data/
 
 # Agents
-frontend-nextjs/src/AGENTS.md
-frontend-nextjs/src/CLAUDE.md
+AGENTS.md
+CLAUDE.md
+
+# Hooks y skills
+.gga
+.atl/

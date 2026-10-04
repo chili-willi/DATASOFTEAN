@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from .models import EmpresaModel, ProductoModel, UsuarioModel
+
 
 # ==========================================
 # SERIALIZADOR DE EMPRESA
@@ -15,10 +17,19 @@ class EmpresaSerializer(serializers.ModelSerializer):
 # ==========================================
 class ProductoSerializer(serializers.ModelSerializer):
     empresa_detalle = EmpresaSerializer(source='empresa', read_only=True)
-    
+
     class Meta:
         model = ProductoModel
-        fields = ['id', 'codigo', 'nombre', 'caracteristicas', 'precios', 'cantidad', 'empresa', 'empresa_detalle']
+        fields = [
+            'id',
+            'codigo',
+            'nombre',
+            'caracteristicas',
+            'precios',
+            'cantidad',
+            'empresa',
+            'empresa_detalle',
+        ]
         # 'empresa' recibe el NIT (ID de la empresa) al crear/actualizar
         # 'empresa_detalle' devuelve el objeto completo al hacer un GET
 
@@ -38,6 +49,6 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
         user = UsuarioModel.objects.create_user(
             correo=validated_data['correo'],
             password=validated_data['password'],
-            rol=validated_data.get('rol', 'Externo')
+            rol=validated_data.get('rol', 'Externo'),
         )
         return user

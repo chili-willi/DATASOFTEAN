@@ -10,9 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-import environ
-from pathlib import Path
 import sys
+from pathlib import Path
+
+import environ
 
 env = environ.Env()
 
@@ -32,12 +33,15 @@ DJANGO_BASE_DIR = Path(__file__).resolve().parent.parent
 # DEBUG NO EJECUTAR EN PRODUCCIÓN
 DEBUG = False
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[
-    'backend-django-3dq5.onrender.com',
-    'localhost',
-    '127.0.0.1',
-    '*'  #Si se prefiere permitir cualquier host durante la prueba
-])
+ALLOWED_HOSTS = env.list(
+    'ALLOWED_HOSTS',
+    default=[
+        'backend-django-3dq5.onrender.com',
+        'localhost',
+        '127.0.0.1',
+        '*',  # Si se prefiere permitir cualquier host durante la prueba
+    ],
+)
 
 
 # Application definition
@@ -160,4 +164,6 @@ REST_FRAMEWORK = {
 }
 
 # URL del Microservicio FastAPI para consumo interno
-FASTAPI_SERVICE_URL = env('FASTAPI_SERVICE_URL', default='https://microservice-fastapi.onrender.com')
+FASTAPI_SERVICE_URL = env(
+    'FASTAPI_SERVICE_URL', default='https://microservice-fastapi.onrender.com'
+)

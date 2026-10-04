@@ -29,17 +29,17 @@ export default function Productos() {
     precioUSD: '',
     precioCOP: '',
     precioEUR: '',
-    cantidad: 0
+    cantidad: 0,
   });
 
   const fetchData = async () => {
     const token = localStorage.getItem('token');
-    const headers = { 'Authorization': `Token ${token}` };
+    const headers = { Authorization: `Token ${token}` };
 
     try {
       const [resProd, resEmp] = await Promise.all([
         fetch(`${DJANGO_URL}/api/productos/`, { headers }),
-        fetch(`${DJANGO_URL}/api/empresas/`, { headers })
+        fetch(`${DJANGO_URL}/api/empresas/`, { headers }),
       ]);
 
       if (resProd.ok && resEmp.ok) {
@@ -76,7 +76,7 @@ export default function Productos() {
       precioUSD: '',
       precioCOP: '',
       precioEUR: '',
-      cantidad: 0
+      cantidad: 0,
     });
     setFormError('');
     setIsModalOpen(true);
@@ -93,7 +93,7 @@ export default function Productos() {
       precioUSD: prod.precios.USD || '',
       precioCOP: prod.precios.COP || '',
       precioEUR: prod.precios.EUR || '',
-      cantidad: prod.cantidad || 0
+      cantidad: prod.cantidad || 0,
     });
     setFormError('');
     setIsModalOpen(true);
@@ -118,12 +118,12 @@ export default function Productos() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre: formData.nombre,
-          caracteristicas: formData.caracteristicas || 'Ninguna características especificada'
-        })
+          caracteristicas: formData.caracteristicas || 'Ninguna características especificada',
+        }),
       });
       if (res.ok) {
         const data = await res.json();
-        setFormData(prev => ({ ...prev, caracteristicas: data.suggested }));
+        setFormData((prev) => ({ ...prev, caracteristicas: data.suggested }));
       } else {
         setFormError('No se pudo obtener sugerencia de la IA.');
       }
@@ -140,7 +140,9 @@ export default function Productos() {
     const token = localStorage.getItem('token');
 
     if (!formData.empresa) {
-      setFormError('Debe asociar el producto a una empresa. Registre una empresa primero si no hay.');
+      setFormError(
+        'Debe asociar el producto a una empresa. Registre una empresa primero si no hay.'
+      );
       return;
     }
 
@@ -161,12 +163,13 @@ export default function Productos() {
       caracteristicas: formData.caracteristicas,
       empresa: formData.empresa,
       precios,
-      cantidad: formData.cantidad ? parseInt(formData.cantidad) : 0
+      cantidad: formData.cantidad ? parseInt(formData.cantidad) : 0,
     };
 
-    const url = modalMode === 'create'
-      ? `${DJANGO_URL}/api/productos/`
-      : `${DJANGO_URL}/api/productos/${formData.id}/`;
+    const url =
+      modalMode === 'create'
+        ? `${DJANGO_URL}/api/productos/`
+        : `${DJANGO_URL}/api/productos/${formData.id}/`;
 
     const method = modalMode === 'create' ? 'POST' : 'PUT';
 
@@ -175,9 +178,9 @@ export default function Productos() {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Token ${token}`
+          Authorization: `Token ${token}`,
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       if (res.ok) {
@@ -191,15 +194,17 @@ export default function Productos() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               action: modalMode === 'create' ? 'CREAR_PRODUCTO' : 'EDITAR_PRODUCTO',
-              details: `Producto Código ${formData.codigo}, Nombre '${formData.nombre}', Empresa NIT ${formData.empresa}`
-            })
+              details: `Producto Código ${formData.codigo}, Nombre '${formData.nombre}', Empresa NIT ${formData.empresa}`,
+            }),
           });
         } catch (bcErr) {
           console.error(bcErr);
         }
       } else {
         const data = await res.json();
-        setFormError(data.error || 'Error al guardar el producto. Verifique que el código sea único.');
+        setFormError(
+          data.error || 'Error al guardar el producto. Verifique que el código sea único.'
+        );
       }
     } catch (err) {
       setFormError('Error de red al guardar el producto');
@@ -215,7 +220,7 @@ export default function Productos() {
     try {
       const res = await fetch(`${DJANGO_URL}/api/productos/${id}/`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Token ${token}` }
+        headers: { Authorization: `Token ${token}` },
       });
 
       if (res.ok) {
@@ -228,8 +233,8 @@ export default function Productos() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               action: 'ELIMINAR_PRODUCTO',
-              details: `Producto Código ${codigo}, Nombre '${nombre}'`
-            })
+              details: `Producto Código ${codigo}, Nombre '${nombre}'`,
+            }),
           });
         } catch (bcErr) {
           console.error(bcErr);
@@ -271,19 +276,30 @@ export default function Productos() {
       )}
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>Cargando listado...</div>
+        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+          Cargando listado...
+        </div>
       ) : productos.length === 0 ? (
-        <div style={{
-          background: 'var(--bg-surface)',
-          border: '1px solid var(--border-color)',
-          borderRadius: '1rem',
-          padding: '3rem',
-          textAlign: 'center',
-          color: 'var(--text-muted)'
-        }}>
-          <Box size={48} style={{ strokeWidth: 1, marginBottom: '1rem', color: 'var(--primary)' }} />
+        <div
+          style={{
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-color)',
+            borderRadius: '1rem',
+            padding: '3rem',
+            textAlign: 'center',
+            color: 'var(--text-muted)',
+          }}
+        >
+          <Box
+            size={48}
+            style={{ strokeWidth: 1, marginBottom: '1rem', color: 'var(--primary)' }}
+          />
           <p>No hay productos registrados en el catálogo.</p>
-          {isAdm && <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Utiliza el botón de arriba para registrar uno nuevo.</p>}
+          {isAdm && (
+            <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
+              Utiliza el botón de arriba para registrar uno nuevo.
+            </p>
+          )}
         </div>
       ) : (
         <div className="table-container">
@@ -308,13 +324,22 @@ export default function Productos() {
                     <td style={{ color: 'var(--primary)', fontWeight: '500' }}>
                       {prod.empresa_detalle ? prod.empresa_detalle.nombre : prod.empresa}
                     </td>
-                    <td style={{ maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={prod.caracteristicas}>
+                    <td
+                      style={{
+                        maxWidth: '250px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                      title={prod.caracteristicas}
+                    >
                       {prod.caracteristicas}
                     </td>
                     <td>
                       {Object.entries(prod.precios).map(([moneda, valor]) => (
                         <span key={moneda} className="price-badge">
-                          {moneda === 'USD' ? '$' : moneda === 'EUR' ? '€' : '$'} {valor.toLocaleString()} {moneda}
+                          {moneda === 'USD' ? '$' : moneda === 'EUR' ? '€' : '$'}{' '}
+                          {valor.toLocaleString()} {moneda}
                         </span>
                       ))}
                     </td>
@@ -372,7 +397,9 @@ export default function Productos() {
             <form onSubmit={handleFormSubmit}>
               <div className="form-row">
                 <div className="form-group">
-                  <label className="form-label" htmlFor="codigo">Código Único</label>
+                  <label className="form-label" htmlFor="codigo">
+                    Código Único
+                  </label>
                   <input
                     id="codigo"
                     name="codigo"
@@ -386,7 +413,9 @@ export default function Productos() {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label" htmlFor="nombre">Nombre del Producto</label>
+                  <label className="form-label" htmlFor="nombre">
+                    Nombre del Producto
+                  </label>
                   <input
                     id="nombre"
                     name="nombre"
@@ -401,7 +430,9 @@ export default function Productos() {
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="empresa">Empresa Propietaria</label>
+                <label className="form-label" htmlFor="empresa">
+                  Empresa Propietaria
+                </label>
                 <select
                   id="empresa"
                   name="empresa"
@@ -410,7 +441,9 @@ export default function Productos() {
                   onChange={handleInputChange}
                   required
                 >
-                  <option value="" disabled>Seleccione una empresa</option>
+                  <option value="" disabled>
+                    Seleccione una empresa
+                  </option>
                   {empresas.map((emp) => (
                     <option key={emp.nit} value={emp.nit}>
                       {emp.nombre} (NIT: {emp.nit})
@@ -420,8 +453,21 @@ export default function Productos() {
               </div>
 
               <div className="form-group">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <label className="form-label" htmlFor="caracteristicas" style={{ marginBottom: 0 }}>Características</label>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  <label
+                    className="form-label"
+                    htmlFor="caracteristicas"
+                    style={{ marginBottom: 0 }}
+                  >
+                    Características
+                  </label>
                   <button
                     type="button"
                     onClick={handleAISuggest}
@@ -434,7 +480,7 @@ export default function Productos() {
                       borderColor: 'var(--primary)',
                       color: 'var(--text-main)',
                       fontSize: '0.75rem',
-                      background: 'rgba(99, 102, 241, 0.1)'
+                      background: 'rgba(99, 102, 241, 0.1)',
                     }}
                     disabled={aiLoading}
                   >
@@ -457,7 +503,9 @@ export default function Productos() {
               <label className="form-label">Precios por Moneda (Mínimo uno)</label>
               <div className="form-row" style={{ marginBottom: '2rem' }}>
                 <div className="form-group">
-                  <label className="form-label" style={{ fontSize: '0.75rem' }} htmlFor="precioUSD">Precio en USD ($)</label>
+                  <label className="form-label" style={{ fontSize: '0.75rem' }} htmlFor="precioUSD">
+                    Precio en USD ($)
+                  </label>
                   <input
                     id="precioUSD"
                     name="precioUSD"
@@ -470,7 +518,9 @@ export default function Productos() {
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label" style={{ fontSize: '0.75rem' }} htmlFor="precioCOP">Precio en COP ($)</label>
+                  <label className="form-label" style={{ fontSize: '0.75rem' }} htmlFor="precioCOP">
+                    Precio en COP ($)
+                  </label>
                   <input
                     id="precioCOP"
                     name="precioCOP"
@@ -482,7 +532,9 @@ export default function Productos() {
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label" style={{ fontSize: '0.75rem' }} htmlFor="precioEUR">Precio en EUR (€)</label>
+                  <label className="form-label" style={{ fontSize: '0.75rem' }} htmlFor="precioEUR">
+                    Precio en EUR (€)
+                  </label>
                   <input
                     id="precioEUR"
                     name="precioEUR"
@@ -495,7 +547,9 @@ export default function Productos() {
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label" style={{ fontSize: '0.75rem' }} htmlFor="cantidad">Cantidad en Inventario</label>
+                  <label className="form-label" style={{ fontSize: '0.75rem' }} htmlFor="cantidad">
+                    Cantidad en Inventario
+                  </label>
                   <input
                     id="cantidad"
                     name="cantidad"
@@ -510,7 +564,11 @@ export default function Productos() {
               </div>
 
               <div style={{ display: 'flex', gap: '1rem' }}>
-                <button type="button" onClick={() => setIsModalOpen(false)} className="btn btn-outline">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="btn btn-outline"
+                >
                   Cancelar
                 </button>
                 <button type="submit" className="btn btn-primary">

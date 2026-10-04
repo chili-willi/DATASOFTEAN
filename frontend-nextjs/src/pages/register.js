@@ -11,7 +11,7 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [rol, setRol] = useState('Externo');
-  const [error, setError] = useState(''); 
+  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -79,37 +79,106 @@ export default function Register() {
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label className="form-label" htmlFor="correo">Correo Electrónico</label>
+              <label className="form-label" htmlFor="correo">
+                Correo Electrónico
+              </label>
               <div style={{ position: 'relative' }}>
-                <Mail size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
-                <input id="correo" type="email" className="form-control" style={{ paddingLeft: '2.75rem' }} placeholder="ejemplo@correo.com" value={correo} onChange={(event) => setCorreo(event.target.value)} required />
+                <Mail
+                  size={16}
+                  style={{
+                    position: 'absolute',
+                    left: '1rem',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: '#94a3b8',
+                  }}
+                />
+                <input
+                  id="correo"
+                  type="email"
+                  className="form-control"
+                  style={{ paddingLeft: '2.75rem' }}
+                  placeholder="ejemplo@correo.com"
+                  value={correo}
+                  onChange={(event) => setCorreo(event.target.value)}
+                  required
+                />
               </div>
             </div>
 
             <div className="form-group">
-              <label className="form-label" htmlFor="rol">Rol</label>
-              <select id="rol" className="form-control" value={rol} onChange={(event) => setRol(event.target.value)}>
+              <label className="form-label" htmlFor="rol">
+                Rol
+              </label>
+              <select
+                id="rol"
+                className="form-control"
+                value={rol}
+                onChange={(event) => setRol(event.target.value)}
+              >
                 <option value="Externo">Externo</option>
                 <option value="Administrador">Administrador</option>
               </select>
             </div>
 
             <div className="form-group">
-              <label className="form-label" htmlFor="password">Contraseña</label>
+              <label className="form-label" htmlFor="password">
+                Contraseña
+              </label>
               <div style={{ position: 'relative' }}>
-                <Lock size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
-                <input id="password" type="password" className="form-control" style={{ paddingLeft: '2.75rem' }} placeholder="Mínimo 8 caracteres" value={password} onChange={(event) => setPassword(event.target.value)} minLength={8} required />
+                <Lock
+                  size={16}
+                  style={{
+                    position: 'absolute',
+                    left: '1rem',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: '#94a3b8',
+                  }}
+                />
+                <input
+                  id="password"
+                  type="password"
+                  className="form-control"
+                  style={{ paddingLeft: '2.75rem' }}
+                  placeholder="Mínimo 8 caracteres"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  minLength={8}
+                  required
+                />
               </div>
             </div>
 
             <div className="form-group" style={{ marginBottom: '2rem' }}>
-              <label className="form-label" htmlFor="confirmPassword">Confirmar contraseña</label>
+              <label className="form-label" htmlFor="confirmPassword">
+                Confirmar contraseña
+              </label>
               <div style={{ position: 'relative' }}>
-                <Lock size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
-                <input id="confirmPassword" type="password" className="form-control" style={{ paddingLeft: '2.75rem' }} placeholder="Repite tu contraseña" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} minLength={8} required />
+                <Lock
+                  size={16}
+                  style={{
+                    position: 'absolute',
+                    left: '1rem',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: '#94a3b8',
+                  }}
+                />
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  className="form-control"
+                  style={{ paddingLeft: '2.75rem' }}
+                  placeholder="Repite tu contraseña"
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  minLength={8}
+                  required
+                />
               </div>
             </div>
-            
+
             <button type="submit" className="btn btn-primary" disabled={loading}>
               {loading ? (
                 <span>Registrando...</span>
@@ -122,22 +191,38 @@ export default function Register() {
             </button>
           </form>
 
-          <p className="card-subtitle" style={{ marginTop: '1.5rem', marginBottom: 0, color: 'var(--text-main)', display: 'flex', justifyContent: 'space-evenly' }}>
-            ¿Ya tienes una cuenta? <button
-            type="button"
-            className="btn btn-outline btn-sm"
+          <p
+            className="card-subtitle"
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.3rem',
-              padding: '0.2rem 0.6rem',
-              borderColor: 'var(--primary)',
+              marginTop: '1.5rem',
+              marginBottom: 0,
               color: 'var(--text-main)',
-              fontSize: '0.75rem',
-              background: 'rgba(99, 102, 241, 0.1)'
-            }}>
-            <LogIn size={12} style={{ color: 'var(--primary)' }} />
-            <span><Link href="/login" style={{ color: 'var(--text-main)', textDecoration: 'none' }}>Iniciar sesión</Link></span></button>
+              display: 'flex',
+              justifyContent: 'space-evenly',
+            }}
+          >
+            ¿Ya tienes una cuenta?{' '}
+            <button
+              type="button"
+              className="btn btn-outline btn-sm"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.3rem',
+                padding: '0.2rem 0.6rem',
+                borderColor: 'var(--primary)',
+                color: 'var(--text-main)',
+                fontSize: '0.75rem',
+                background: 'rgba(99, 102, 241, 0.1)',
+              }}
+            >
+              <LogIn size={12} style={{ color: 'var(--primary)' }} />
+              <span>
+                <Link href="/login" style={{ color: 'var(--text-main)', textDecoration: 'none' }}>
+                  Iniciar sesión
+                </Link>
+              </span>
+            </button>
           </p>
         </div>
       </div>

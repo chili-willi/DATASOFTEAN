@@ -34,22 +34,34 @@ export default function Navbar() {
           <Link href="/" className={`nav-link ${router.pathname === '/' ? 'active' : ''}`}>
             Dashboard
           </Link>
-          <Link href="/empresas" className={`nav-link ${router.pathname === '/empresas' ? 'active' : ''}`}>
+          <Link
+            href="/empresas"
+            className={`nav-link ${router.pathname === '/empresas' ? 'active' : ''}`}
+          >
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
               <Building2 size={16} /> Empresas
             </span>
           </Link>
-          <Link href="/productos" className={`nav-link ${router.pathname === '/productos' ? 'active' : ''}`}>
+          <Link
+            href="/productos"
+            className={`nav-link ${router.pathname === '/productos' ? 'active' : ''}`}
+          >
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
               <Box size={16} /> Productos
             </span>
           </Link>
-          <Link href="/inventario" className={`nav-link ${router.pathname === '/inventario' ? 'active' : ''}`}>
+          <Link
+            href="/inventario"
+            className={`nav-link ${router.pathname === '/inventario' ? 'active' : ''}`}
+          >
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
               <ClipboardList size={16} /> Inventario
             </span>
           </Link>
-          <Link href="/copiloto" className={`nav-link ${router.pathname === '/copiloto' ? 'active' : ''}`}>
+          <Link
+            href="/copiloto"
+            className={`nav-link ${router.pathname === '/copiloto' ? 'active' : ''}`}
+          >
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
               <Cpu size={16} /> IA & Auditoría
             </span>
@@ -66,7 +78,13 @@ export default function Navbar() {
           <button
             onClick={handleLogout}
             className="btn btn-outline btn-sm"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', width: 'auto', padding: '0.4rem 0.6rem' }}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.3rem',
+              width: 'auto',
+              padding: '0.4rem 0.6rem',
+            }}
             title="Cerrar Sesión"
           >
             <LogOut size={15} />

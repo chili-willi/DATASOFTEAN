@@ -22,7 +22,7 @@ export default function Empresas() {
     const token = localStorage.getItem('token');
     try {
       const res = await fetch(`${DJANGO_URL}/api/empresas/`, {
-        headers: { 'Authorization': `Token ${token}` }
+        headers: { Authorization: `Token ${token}` },
       });
       if (res.ok) {
         const data = await res.json();
@@ -54,7 +54,12 @@ export default function Empresas() {
 
   const openEditModal = (emp) => {
     setModalMode('edit');
-    setFormData({ nit: emp.nit, nombre: emp.nombre, direccion: emp.direccion, telefono: emp.telefono });
+    setFormData({
+      nit: emp.nit,
+      nombre: emp.nombre,
+      direccion: emp.direccion,
+      telefono: emp.telefono,
+    });
     setFormError('');
     setIsModalOpen(true);
   };
@@ -75,9 +80,10 @@ export default function Empresas() {
       return;
     }
 
-    const url = modalMode === 'create'
-      ? `${DJANGO_URL}/api/empresas/`
-      : `${DJANGO_URL}/api/empresas/${formData.nit}/`;
+    const url =
+      modalMode === 'create'
+        ? `${DJANGO_URL}/api/empresas/`
+        : `${DJANGO_URL}/api/empresas/${formData.nit}/`;
 
     const method = modalMode === 'create' ? 'POST' : 'PUT';
 
@@ -86,9 +92,9 @@ export default function Empresas() {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Token ${token}`
+          Authorization: `Token ${token}`,
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const data = await res.json();
@@ -104,8 +110,8 @@ export default function Empresas() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               action: modalMode === 'create' ? 'CREAR_EMPRESA' : 'EDITAR_EMPRESA',
-              details: `Empresa con NIT ${formData.nit} y Nombre '${formData.nombre}'`
-            })
+              details: `Empresa con NIT ${formData.nit} y Nombre '${formData.nombre}'`,
+            }),
           });
         } catch (bcErr) {
           console.error('Error logging to blockchain ledger:', bcErr);
@@ -113,10 +119,12 @@ export default function Empresas() {
       } else {
         // Mostrar errores detallados devueltos por la validación Pydantic del Dominio
         if (data.error && data.detalles) {
-          const detailMsg = data.detalles.map(d => `${d.loc.join('.')}: ${d.msg}`).join(', ');
+          const detailMsg = data.detalles.map((d) => `${d.loc.join('.')}: ${d.msg}`).join(', ');
           setFormError(`Dominio rechaza datos: ${detailMsg}`);
         } else {
-          setFormError(data.error || 'Error al guardar la empresa. Verifique que el NIT sea único.');
+          setFormError(
+            data.error || 'Error al guardar la empresa. Verifique que el NIT sea único.'
+          );
         }
       }
     } catch (err) {
@@ -125,7 +133,11 @@ export default function Empresas() {
   };
 
   const handleDelete = async (nit, nombre) => {
-    if (!confirm(`¿Está seguro de que desea eliminar la empresa ${nombre}? Se eliminarán todos sus productos asociados.`)) {
+    if (
+      !confirm(
+        `¿Está seguro de que desea eliminar la empresa ${nombre}? Se eliminarán todos sus productos asociados.`
+      )
+    ) {
       return;
     }
 
@@ -133,7 +145,7 @@ export default function Empresas() {
     try {
       const res = await fetch(`${DJANGO_URL}/api/empresas/${nit}/`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Token ${token}` }
+        headers: { Authorization: `Token ${token}` },
       });
 
       if (res.ok) {
@@ -146,8 +158,8 @@ export default function Empresas() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               action: 'ELIMINAR_EMPRESA',
-              details: `Empresa con NIT ${nit} y Nombre '${nombre}'`
-            })
+              details: `Empresa con NIT ${nit} y Nombre '${nombre}'`,
+            }),
           });
         } catch (bcErr) {
           console.error('Error logging deletion to blockchain:', bcErr);
@@ -189,19 +201,30 @@ export default function Empresas() {
       )}
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>Cargando listado...</div>
+        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+          Cargando listado...
+        </div>
       ) : empresas.length === 0 ? (
-        <div style={{
-          background: 'var(--bg-surface)',
-          border: '1px solid var(--border-color)',
-          borderRadius: '1rem',
-          padding: '3rem',
-          textAlign: 'center',
-          color: 'var(--text-muted)'
-        }}>
-          <Building2 size={48} style={{ strokeWidth: 1, marginBottom: '1rem', color: 'var(--primary)' }} />
+        <div
+          style={{
+            background: 'var(--bg-surface)',
+            border: '1px solid var(--border-color)',
+            borderRadius: '1rem',
+            padding: '3rem',
+            textAlign: 'center',
+            color: 'var(--text-muted)',
+          }}
+        >
+          <Building2
+            size={48}
+            style={{ strokeWidth: 1, marginBottom: '1rem', color: 'var(--primary)' }}
+          />
           <p>No hay empresas registradas en el sistema.</p>
-          {isAdm && <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>Utiliza el botón de arriba para registrar una nueva.</p>}
+          {isAdm && (
+            <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
+              Utiliza el botón de arriba para registrar una nueva.
+            </p>
+          )}
         </div>
       ) : (
         <div className="table-container">
@@ -275,7 +298,9 @@ export default function Empresas() {
 
             <form onSubmit={handleFormSubmit}>
               <div className="form-group">
-                <label className="form-label" htmlFor="nit">NIT (Identificador Único)</label>
+                <label className="form-label" htmlFor="nit">
+                  NIT (Identificador Único)
+                </label>
                 <input
                   id="nit"
                   name="nit"
@@ -290,7 +315,9 @@ export default function Empresas() {
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="nombre">Nombre de la Empresa</label>
+                <label className="form-label" htmlFor="nombre">
+                  Nombre de la Empresa
+                </label>
                 <input
                   id="nombre"
                   name="nombre"
@@ -304,7 +331,9 @@ export default function Empresas() {
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="direccion">Dirección</label>
+                <label className="form-label" htmlFor="direccion">
+                  Dirección
+                </label>
                 <input
                   id="direccion"
                   name="direccion"
@@ -318,7 +347,9 @@ export default function Empresas() {
               </div>
 
               <div className="form-group" style={{ marginBottom: '2rem' }}>
-                <label className="form-label" htmlFor="telefono">Teléfono</label>
+                <label className="form-label" htmlFor="telefono">
+                  Teléfono
+                </label>
                 <input
                   id="telefono"
                   name="telefono"
@@ -332,7 +363,11 @@ export default function Empresas() {
               </div>
 
               <div style={{ display: 'flex', gap: '1rem' }}>
-                <button type="button" onClick={() => setIsModalOpen(false)} className="btn btn-outline">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="btn btn-outline"
+                >
                   Cancelar
                 </button>
                 <button type="submit" className="btn btn-primary">

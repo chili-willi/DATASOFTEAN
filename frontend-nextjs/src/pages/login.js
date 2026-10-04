@@ -32,10 +32,13 @@ export default function Login() {
 
       if (res.ok) {
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify({
-          correo: data.correo,
-          rol: data.rol
-        }));
+        localStorage.setItem(
+          'user',
+          JSON.stringify({
+            correo: data.correo,
+            rol: data.rol,
+          })
+        );
         router.push('/');
       } else {
         setError(data.error || 'Credenciales incorrectas');
@@ -77,7 +80,7 @@ export default function Login() {
                     left: '1rem',
                     top: '50%',
                     transform: 'translateY(-50%)',
-                    color: '#94a3b8'
+                    color: '#94a3b8',
                   }}
                 />
                 <input
@@ -105,7 +108,7 @@ export default function Login() {
                     left: '1rem',
                     top: '50%',
                     transform: 'translateY(-50%)',
-                    color: '#94a3b8'
+                    color: '#94a3b8',
                   }}
                 />
                 <input
@@ -133,22 +136,41 @@ export default function Login() {
             </button>
           </form>
 
-          <p className="card-subtitle" style={{ marginTop: '1.5rem', marginBottom: 0, color: 'var(--text-main)', display: 'flex', justifyContent: 'space-evenly' }}>
-            ¿No tienes una cuenta? <button
-            type="button"
-            className="btn btn-outline btn-sm"
+          <p
+            className="card-subtitle"
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.3rem',
-              padding: '0.2rem 0.6rem',
-              borderColor: 'var(--primary)',
+              marginTop: '1.5rem',
+              marginBottom: 0,
               color: 'var(--text-main)',
-              fontSize: '0.75rem',
-              background: 'rgba(99, 102, 241, 0.1)'
-            }}>
-            <UserPlus size={12} style={{ color: 'var(--primary)' }} />
-            <span><Link href="/register" style={{ color: 'var(--text-main)', textDecoration: 'none' }}>Crear cuenta</Link></span></button>
+              display: 'flex',
+              justifyContent: 'space-evenly',
+            }}
+          >
+            ¿No tienes una cuenta?{' '}
+            <button
+              type="button"
+              className="btn btn-outline btn-sm"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.3rem',
+                padding: '0.2rem 0.6rem',
+                borderColor: 'var(--primary)',
+                color: 'var(--text-main)',
+                fontSize: '0.75rem',
+                background: 'rgba(99, 102, 241, 0.1)',
+              }}
+            >
+              <UserPlus size={12} style={{ color: 'var(--primary)' }} />
+              <span>
+                <Link
+                  href="/register"
+                  style={{ color: 'var(--text-main)', textDecoration: 'none' }}
+                >
+                  Crear cuenta
+                </Link>
+              </span>
+            </button>
           </p>
         </div>
       </div>

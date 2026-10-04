@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.db import models
+
 
 # ==========================================
 # 1. MODELO DE EMPRESA
@@ -18,19 +19,19 @@ class EmpresaModel(models.Model):
 
 
 # ==========================================
-# 2. MODELO DE PRODUCTO E INVENTARIO 
+# 2. MODELO DE PRODUCTO E INVENTARIO
 # ==========================================
 class ProductoModel(models.Model):
     codigo = models.CharField(max_length=100, unique=True)
     nombre = models.CharField(max_length=255)
     caracteristicas = models.TextField()
-    
+
     # Precio en varias monedas ej: {"USD": 50, "COP": 200000}
     precios = models.JSONField(default=dict)
 
     # Cantidad disponible en inventario
     cantidad = models.PositiveIntegerField(default=0)
-    
+
     # Al eliminar una empresa, se eliminan sus productos en cascada
     empresa = models.ForeignKey(EmpresaModel, on_delete=models.CASCADE, related_name='productos')
 
@@ -38,22 +39,22 @@ class ProductoModel(models.Model):
         db_table = 'productos'
 
     def __str__(self):
-        return f"{self.nombre} ({self.empresa.nombre})"
+        return f'{self.nombre} ({self.empresa.nombre})'
 
 
 # ==========================================
-# 3. GESTIÓN DE USUARIOS 
+# 3. GESTIÓN DE USUARIOS
 # ==========================================
 class UsuarioManager(BaseUserManager):
     def create_user(self, correo, password=None, rol='Externo'):
         if not correo:
             raise ValueError('El usuario debe tener un correo electrónico')
-        
+
         user = self.model(
             correo=self.normalize_email(correo),
             rol=rol,
         )
-        user.set_password(password) # Encripta automáticamente la contraseña
+        user.set_password(password)  # Encripta automáticamente la contraseña
         user.save(using=self._db)
         return user
 
@@ -66,14 +67,14 @@ class UsuarioManager(BaseUserManager):
 
 class UsuarioModel(AbstractBaseUser):
     correo = models.EmailField(max_length=255, unique=True)
-    
+
     # Se definen los roles permitidos explícitamente
     ROLES_CHOICES = [
         ('Administrador', 'Administrador'),
         ('Externo', 'Externo'),
     ]
     rol = models.CharField(max_length=20, choices=ROLES_CHOICES, default='Externo')
-    
+
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
@@ -86,11 +87,14 @@ class UsuarioModel(AbstractBaseUser):
         db_table = 'usuarios'
 
     def __str__(self):
-        return f"{self.correo} - {self.rol}"
+        return f'{self.correo} - {self.rol}'
 
     # Permisos necesarios para el panel de administración de Django (si decides usarlo)
-    def has_perm(self, perm, obj=None): return True
-    def has_module_perms(self, app_label): return True
+    def has_perm(self, perm, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
 
     @property
     def is_staff(self):

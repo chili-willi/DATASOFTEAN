@@ -1,6 +1,14 @@
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from .views import EmpresaViewSet, ProductoViewSet, registrar_usuario, login_usuario, obtener_perfil, health_check
+
+from .views import (
+    EmpresaViewSet,
+    ProductoViewSet,
+    health_check,
+    login_usuario,
+    obtener_perfil,
+    registrar_usuario,
+)
 
 # El Router de DRF genera automáticamente las rutas estándar de tipo /empresas/, /empresas/id/
 router = DefaultRouter()
