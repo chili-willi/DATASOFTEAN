@@ -31,6 +31,7 @@ export default function Productos() {
   const [modalMode, setModalMode] = useState('create'); // 'create' | 'edit'
   const [formError, setFormError] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   // Form Fields
   const [formData, setFormData] = useState({
@@ -145,6 +146,18 @@ export default function Productos() {
     }
   };
 
+  const handleToggleSelect = (id) => {
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
+  };
+
+  const handleToggleSelectAll = () => {
+    if (selectedIds.length === productos.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(productos.map((p) => p.id));
+    }
+  };
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setFormError('');
@@ -226,7 +239,10 @@ export default function Productos() {
     if (!confirm(`¿Está seguro de que desea eliminar el producto ${nombre} (${codigo})?`)) {
       return;
     }
+    await performDelete(id, codigo, nombre);
+  };
 
+  const performDelete = async (id, codigo, nombre) => {
     const token = localStorage.getItem('token');
     try {
       const res = await fetch(`${DJANGO_URL}/api/productos/${id}/`, {
@@ -235,8 +251,6 @@ export default function Productos() {
       });
 
       if (res.ok) {
-        fetchData();
-
         // Registrar en Blockchain
         try {
           await fetch(`${FASTAPI_URL}/api/micro/blockchain/add`, {
@@ -250,12 +264,41 @@ export default function Productos() {
         } catch (bcErr) {
           console.error(bcErr);
         }
-      } else {
-        alert('Error al eliminar el producto.');
+        return true;
       }
+      return false;
     } catch (err) {
-      alert('Error de red al eliminar el producto', err);
+      console.error(err);
+      return false;
     }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 1) {
+      if (!confirm(`¿Está seguro de que desea eliminar el producto seleccionado?`)) {
+        return;
+      }
+    } else {
+      if (
+        !confirm(
+          `¿Está seguro de que desea eliminar los ${selectedIds.length} productos seleccionados?`
+        )
+      ) {
+        return;
+      }
+    }
+
+    const productsToDelete = productos.filter((p) => selectedIds.includes(p.id));
+
+    let deletedCount = 0;
+    for (const prod of productsToDelete) {
+      const success = await performDelete(prod.id, prod.codigo, prod.nombre);
+      if (success) deletedCount++;
+    }
+
+    alert(`Se eliminaron ${deletedCount} productos.`);
+    setSelectedIds([]);
+    fetchData();
   };
 
   const isAdm = user.rol === 'Administrador';
@@ -272,10 +315,22 @@ export default function Productos() {
           <p className="page-subtitle">Visualización y gestión del catálogo global de productos</p>
         </div>
         {isAdm && (
-          <button onClick={openCreateModal} className="btn btn-primary" style={{ width: 'auto' }}>
-            <Plus size={18} />
-            <span>Registrar Producto</span>
-          </button>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            {selectedIds.length > 0 && (
+              <button
+                onClick={handleBulkDelete}
+                className="btn btn-danger"
+                style={{ width: 'auto' }}
+              >
+                <Trash2 size={18} />
+                <span>Eliminar Seleccionados ({selectedIds.length})</span>
+              </button>
+            )}
+            <button onClick={openCreateModal} className="btn btn-primary" style={{ width: 'auto' }}>
+              <Plus size={18} />
+              <span>Registrar Producto</span>
+            </button>
+          </div>
         )}
       </div>
 
@@ -318,6 +373,13 @@ export default function Productos() {
             <table className="data-table">
               <thead>
                 <tr>
+                  <th style={{ width: '40px' }}>
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.length === productos.length && productos.length > 0}
+                      onChange={handleToggleSelectAll}
+                    />
+                  </th>
                   <th>Código</th>
                   <th>Nombre</th>
                   <th>Empresa</th>
@@ -330,6 +392,13 @@ export default function Productos() {
               <tbody>
                 {productos.map((prod) => (
                   <tr key={prod.id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(prod.id)}
+                        onChange={() => handleToggleSelect(prod.id)}
+                      />
+                    </td>
                     <td style={{ fontWeight: '700' }}>{prod.codigo}</td>
                     <td style={{ color: 'var(--text-main)', fontWeight: '600' }}>{prod.nombre}</td>
                     <td style={{ color: 'var(--primary)', fontWeight: '500' }}>
